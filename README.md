@@ -1,5 +1,4 @@
 # MRI-Brain-Tumor-Detection
-### Tristan Pedro
 
 ## Overview of Project
 This project begins with a Jupyter Notebook (`tumor-classification-cnn.ipynb`) where I preprocess an MRI brain image dataset and dive into why deep learning, especially CNNs, works well for this kind of problem. The notebook walks through building and tuning a CNN model, showing how it's great for image classification, especially with medical images like MRIs.
@@ -123,7 +122,7 @@ This section outlines the steps to run the Flask application locally and how to 
 ### Setting Up the Flask Application
 1. **Clone the Repository**:
     ```
-    git clone https://github.com/tripedro/MRI-Brain-Tumor-Detection.git
+    git clone https://github.com/Rutvik-121/Brain_Tumor_FYP.git
     ```
 
 2. **Navigate to the Project Directory**:
