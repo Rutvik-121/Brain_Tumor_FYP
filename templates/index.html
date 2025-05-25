@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain Tumor Classification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .navbar {
+            width: 100%;
+            background: linear-gradient(90deg, #1976d2 60%, #00c6ff 100%);
+            padding: 18px 0 14px 0;
+            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.10);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .navbar h2 {
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 0;
+            font-size: 1.7em;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 32px 24px 24px 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.95);
+            text-align: center;
+            transition: box-shadow 0.3s;
+        }
+        .container:hover {
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+        }
+        h1 {
+            margin-bottom: 24px;
+            color: #2d3a4b;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        #testImage {
+            width: 100%;
+            max-width: 350px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.15);
+            opacity: 0;
+            transition: opacity 0.7s;
+            border: 5px solid #1976d2; /* Added border */
+        }
+        #testImage.loaded {
+            opacity: 1;
+        }
+        #actualLabel, #predictedLabel {
+            font-size: 1.1em;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-radius: 6px;
+        }
+        #actualLabel {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        #predictedLabel {
+            background: #fce4ec;
+            color: #c2185b;
+            font-weight: 700;
+        }
+        button {
+            margin-top: 22px;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            color: #fff;
+            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        #loadingIndicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: #007bff;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 28px 40px;
+            border-radius: 14px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.18);
+            font-family: 'Montserrat', Arial, sans-serif;
+            letter-spacing: 1px;
+        }
+        @media (max-width: 600px) {
+            .navbar h2 {
+                font-size: 1.2em;
+            }
+            .container {
+                padding: 16px 6px 16px 6px;
+            }
+            #testImage {
+                max-width: 95vw;
+                height: 45vw;
+                min-height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>Brain Tumor Classifier</h2>
+    </div>
+    <div class="container">
+        <h1>MRI Image Prediction</h1>
+        <img id="testImage" src="" alt="Test Image">
+        <p id="actualLabel">Actual Label: </p>
+        <p id="predictedLabel">Predicted Label: </p>
+        <button onclick="getNextImage()">Load Random Image</button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">Loading...</div>
+    
+    <script>
+        function getNextImage() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            const img = document.getElementById('testImage');
+            img.classList.remove('loaded');
+            fetch('/get-random-image')
+                .then(response => response.json())
+                .then(data => {
+                    img.onload = function() {
+                        img.classList.add('loaded');
+                    };
+                    img.src = data.image_path + '?t=' + new Date().getTime(); // prevent caching
+                    document.getElementById('actualLabel').innerText = 'Actual Label: ' + data.actual_label;
+                    document.getElementById('predictedLabel').innerText = 'Predicted Label: ' + data.predicted_label;
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            getNextImage();
+        }, false);
+    </script>
+    
+</body>
+
+</html>
